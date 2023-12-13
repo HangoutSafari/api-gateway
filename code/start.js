@@ -9,10 +9,12 @@ import cors from 'cors';
 const app = express();
 
 // support json encoded and url-encoded bodies, mainly used for post and update
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
 
 app.use('/', indexRouter);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.set('port', process.env.PORT || 3010);
 const server = app.listen(app.get('port'), () => {
