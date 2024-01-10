@@ -28,7 +28,7 @@ const modelsProxy = createProxyMiddleware({
 
 router.use('/events', cors(), eventsProxy);
 router.use('/animals', cors(), animalsProxy);
-router.use('/users', cors(), usersProxy);
+router.use('/users', usersProxy);
 router.use('/models', cors(), modelsProxy);
 
 export default router;
