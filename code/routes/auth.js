@@ -1,12 +1,15 @@
 import express from 'express';
+import * as dotenv from "dotenv";
 import cors from 'cors';
 import { createClient} from "@supabase/supabase-js";
 const router = express.Router();
 // TODO: Import variables from env
+dotenv.config({ path: 'variables.env' });
 const supabase = createClient(
-    'supabaseUrl',
-    'supabaseKey'
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
 );
+
 
 async function login(req, res) {
   try {
@@ -101,9 +104,29 @@ router.options('/register', (req, res, next) => {
     next(err);
   }
 });
+router.options('/session', (req, res, next) => {
+  try {
+    res.header({
+      allow: 'GET, POST, OPTIONS',
+      'Content-type': 'application/json',
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Origin":"http://localhost:5173",
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+      Data: Date.now(),
+      'Content-length': 0,
+    });
+
+    res.sendStatus(200);
+  } catch (err) {
+    next(err);
+  }
+});
+async function checkSession(req, res) {
+  res.sendStatus(200).json({ message: "session checked"});
+}
 
 router.post('/login', login);
 router.post('/register', cors(), postAuthDetails);
-
+router.get('/session', cors(), checkSession)
 
 export default router;
