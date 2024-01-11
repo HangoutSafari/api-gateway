@@ -2,6 +2,7 @@ import express from 'express';
 import * as dotenv from "dotenv";
 import cors from 'cors';
 import { createClient} from "@supabase/supabase-js";
+import { getCurrentSession } from "../getCurrentSession.js"
 const router = express.Router();
 // TODO: Import variables from env
 dotenv.config({ path: 'variables.env' });
@@ -122,11 +123,20 @@ router.options('/session', (req, res, next) => {
   }
 });
 async function checkSession(req, res) {
-  res.sendStatus(200).json({ message: "session checked"});
+
+    const supabaseInstance = await getCurrentSession(req);
+    res.set("Access-Control-Allow-Credentials", "true");
+    res.set("Access-Control-Allow-Origin", "http://localhost:5173");
+    if (supabaseInstance["code"] == 0) {
+      res.status(200).json({ message: "good session"});
+    } else {;
+      res.status(500).json({error: supabaseInstance["error"]});
+    }
+  
 }
 
 router.post('/login', login);
 router.post('/register', cors(), postAuthDetails);
-router.get('/session', cors(), checkSession)
+router.get('/session', checkSession)
 
 export default router;
