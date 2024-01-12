@@ -56,38 +56,6 @@ router.options('/login', (req, res, next) => {
     next(err);
   }
 });
-
-
-
-async function signUserUp(userData) {
-  const {username, email, password} = userData;
-  const { data, error } = await supabase.auth.signUp({
-    email: email,
-    password: password,
-    options: {
-      data: {
-        username: username,
-      },
-    },
-  });
-  if (error){     
-    console.error('query error', error);
-    throw error;
-  }
-  return data;
-}
-
-async function postAuthDetails(req, res) {
-  const userData = req.body;
-  try{
-    const value = await signUserUp(userData)
-    res.status(200).json({ message: "Registration successful", data: value })
-  }
-  catch (err) {
-    res.status(500).send(err.message);
-  }
-};
-
 router.options('/register', (req, res, next) => {
   try {
     res.header({
@@ -122,6 +90,37 @@ router.options('/session', (req, res, next) => {
     next(err);
   }
 });
+
+
+async function signUserUp(userData) {
+  const {username, email, password} = userData;
+  const { data, error } = await supabase.auth.signUp({
+    email: email,
+    password: password,
+    options: {
+      data: {
+        username: username,
+      },
+    },
+  });
+  if (error){     
+    console.error('query error', error);
+    throw error;
+  }
+  return data;
+}
+
+async function postAuthDetails(req, res) {
+  const userData = req.body;
+  try{
+    const value = await signUserUp(userData)
+    res.status(200).json({ message: "Registration successful", data: value })
+  }
+  catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
 async function checkSession(req, res) {
 
     const supabaseInstance = await getCurrentSession(req);

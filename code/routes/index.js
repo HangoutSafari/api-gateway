@@ -30,7 +30,7 @@ const modelsProxy = createProxyMiddleware({
 });
 
 router.use('/events', cors(), eventsProxy);
-router.use('/animals', cors(), animalsProxy);
+router.use('/animals', animalsProxy);
 router.use('/users', cors(), usersProxy);
 router.use('/models', cors(), modelsProxy);
 
