@@ -2,7 +2,7 @@ import express from 'express';
 import * as dotenv from "dotenv";
 import cors from 'cors';
 import { createClient} from "@supabase/supabase-js";
-import { getCurrentSession } from "../getCurrentSession.js"
+import { getCurrentSession } from "../dbHelper.js"
 const router = express.Router();
 // TODO: Import variables from env
 dotenv.config({ path: 'variables.env' });

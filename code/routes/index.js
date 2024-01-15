@@ -1,13 +1,7 @@
 import express from 'express';
-import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 const router = express.Router();
 
-
-router.use((req, res, next) => {
-  req.headers["X-Authorization"] = "true";
-  next();
-});
 // create a proxy for each microservice
 const eventsProxy = createProxyMiddleware({
     target: 'http://msevents:3011',
@@ -29,9 +23,9 @@ const modelsProxy = createProxyMiddleware({
     changeOrigin: true,
 });
 
-router.use('/events', cors(), eventsProxy);
+router.use('/events', eventsProxy);
 router.use('/animals', animalsProxy);
-router.use('/users', cors(), usersProxy);
-router.use('/models', cors(), modelsProxy);
+router.use('/users', usersProxy);
+router.use('/models', modelsProxy);
 
 export default router;
