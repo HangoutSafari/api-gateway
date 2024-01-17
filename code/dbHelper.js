@@ -32,6 +32,25 @@ export async function getCurrentSession(req) {
   return { code:0, client: supabase};
 }
 
+export async function getCurrentUserFromSession(req) {
+  const cookies = req.headers.cookie;
+  if (cookies == null) return { code: 1, error: "cookies error"};
+  const access_token = cookies.split('; ')[0].split('=')[1];
+  const refresh_token = cookies.split('; ')[1].split('=')[1];
+  const { sessionData, sessionError } = supabase.auth.setSession({
+    access_token,
+    refresh_token,
+  })
+  if (sessionError) {
+    console.error('session error', sessionError);
+    return { code: 1, error: "supabaseError"};
+  }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return { code:0, user};
+}
+
 export async function getDataFrom(req, res, tableName, id = null) {
   const {data, error} = await getData(supabase, tableName, id);
   sendToClient(res, await data, await error);
