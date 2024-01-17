@@ -8,6 +8,11 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
+const serviceSupabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SERVICE_KEY
+)
+
 export async function getCurrentSession(req) {
   const cookies = req.headers.cookie;
   if (cookies == null) return { code: 1, error: "cookies error"};
@@ -126,12 +131,12 @@ async function deleteData(supabaseInstance, tableName, column, condition) {
   return await supabaseInstance.from(tableName).delete().eq(column, condition);
 }
 
-async function getDataWithFunction(req, res, functionName, key = null, value = null) {
+export async function getDataWithFunction(req, res, functionName, key = null, value = null) {
   const {data, error} = await callSupabaseRPC(supabase, functionName, key, value);
   sendToClient(res, await data, await error);
 }
 
-async function getAuthDataWithFunction(req, res, functionName, key = null, value = null) {
+export async function getAuthDataWithFunction(req, res, functionName, key = null, value = null) {
   const session = await getCurrentSession(req);
   if (session['code'] == 1) res.send(`error in session: ${session['error']}`);
   else {
@@ -149,5 +154,14 @@ async function callSupabaseRPC(supabase, functionName, key, value) {
     return await supabase.rpc(functionName, {
       [key]: value
     })
+  }
+}
+
+export async function getServiceFunction(req, res, functionName, key = null, value = null) {
+  const session = await getCurrentSession(req);
+  if (session['code'] == 1) res.send(`error in session: ${session['error']}`);
+  else {
+    const {data, error} = await callSupabaseRPC(serviceSupabase, functionName, key, value);
+    sendToClient(res, await data, await error, true)
   }
 }
