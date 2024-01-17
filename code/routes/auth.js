@@ -128,9 +128,8 @@ async function checkSession(req, res) {
     if (supabaseInstance["code"] == 0) {
       res.status(200).json({ user: supabaseInstance['user'].id });
     } else {;
-      res.status(500).json({error: supabaseInstance["error"]});
+      res.status(403).json({error: supabaseInstance["error"]});
     }
-  
 }
 
 router.post('/login', login);
