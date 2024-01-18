@@ -126,7 +126,7 @@ async function checkSession(req, res) {
     res.set("Access-Control-Allow-Credentials", "true");
     res.set("Access-Control-Allow-Origin", "http://localhost:5173");
     if (supabaseInstance["code"] == 0) {
-      res.status(200).json({ user: supabaseInstance['user'].id });
+      res.status(200).json({ user: supabaseInstance['user'] });
     } else {;
       res.status(403).json({error: supabaseInstance["error"]});
     }
